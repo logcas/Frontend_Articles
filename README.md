@@ -6,6 +6,7 @@
 2. [原型链与继承](https://github.com/logcas/Frontend_Articles/blob/master/javascript/2-原型链与继承.md)
 3. [严格模式](https://github.com/logcas/Frontend_Articles/blob/master/javascript/0-严格模式.md)
 4. [执行上下文和变量对象](https://github.com/logcas/Frontend_Articles/blob/master/javascript/3-执行上下文和变量对象.md)
+5. [闭包](https://github.com/logcas/Frontend_Articles/blob/master/javascript/4-闭包.md)
 
 ## Node
 1. [垃圾回收机制](https://github.com/logcas/Frontend_Articles/blob/master/node/0-垃圾清理.md)

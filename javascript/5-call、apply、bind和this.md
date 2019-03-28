@@ -244,3 +244,18 @@ function add(a, b, c, d) {
 let curryAdd = currying(add);
 console.log(curryAdd(1,2)(3,4)); // 10
 ```
+
+#### `bind` 实现
+```js
+Function.prototype.myBind = function(context, ...args) {
+  let fn = this;
+  let ctx = context || null;
+  let allAgrs = [].concat(args);
+  let fBound = function(...args) {
+    allAgrs = allAgrs.concat(args);
+    return fn.apply(this instanceof fn ? this : ctx, allAgrs);
+  };
+  fn.prototype && (fBound.prototype = Object.create(fn.prototype));
+  return fBound;
+}
+```

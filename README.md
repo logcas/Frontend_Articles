@@ -15,3 +15,4 @@
 
 ## Interview
 1. [深拷贝与浅拷贝](https://github.com/logcas/Frontend_Articles/blob/master/interview/深拷贝与浅拷贝.md)
+2. [Promise](https://github.com/logcas/Frontend_Articles/blob/master/interview/Promise.md)

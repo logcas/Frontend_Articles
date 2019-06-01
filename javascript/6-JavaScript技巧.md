@@ -159,6 +159,8 @@ console.log(r); // 10
 
 ## 11. 函数柯里化（支持占位符）
 
+占坑
+
 ## 12. 偏函数
 
 ```js
@@ -257,6 +259,8 @@ Function.prototype._call = function(ctx, ...args) {
 
 ## 16. 简易的 CO 模块
 
+占坑
+
 ## 17. 函数防抖
 
 ```js
@@ -312,22 +316,237 @@ function throttle(fn, wait) {
 
 ## 19. 图片懒加载
 
+```js
+class LazyLoad {
+  constructor(imgs) {
+    this.images = [];
+    for(let i = 0;i < imgs.length; ++i) {
+      this.images[i] = {
+        hasLoad: false,
+        img: imgs[i]
+      };
+    }
+    // 这里建议结合节流函数
+    document.addEventListener('scroll', () => {
+      for(let i = 0;i < this.images.length; ++i) {
+        if(this.images[i].hasLoad) continue;
+        let { top } = this.images[i].img.getBoundingClientRect();
+        if(top <= window.innerHeight) {
+          this.images[i].hasLoad = true;
+          this.images[i].img.src = this.images[i].img.dataset.src;
+          this.images[i].img = null; 
+        }
+      }
+    });
+  }
+}
+
+let imgs = document.querySelectorAll('img');
+new LazyLoad(imgs);
+```
+
 ## 20. new 关键字
+
+```js
+// new 关键字主要操作步骤:
+// 1. 定义一个空对象
+// 2. 把空对象的原型指向构造函数原型
+// 3. 绑定this为该空对象，执行构造造函
+// 4. 如果构造函数返回一个新对象，则返回该新对象，否则返回原来的空对象
+
+function _new(constructor, ...args) {
+  if(typeof constructor !== 'function') throw new Error('contructor must be a function');
+  let o = Object.create(null);
+  o.__proto__ = constructor.prototype;
+  let res = constructor.apply(o, args);
+  return typeof res === 'object' && res !== null ? res : o;
+}
+```
 
 ## 21. 实现 Object.assign
 
+```js
+Object.prototype._assign = function(target, ...objects) {
+  return objects.reduce((pre, cur) => {
+    if(cur === null) return cur;
+    [...Object.keys(cur), ...Object.getOwnPropertySymbols(cur)].forEach(key => {
+      pre[key] = cur[key];
+    });
+    return pre;
+  }, target);
+}
+```
+
 ## 22. instanceof 实现
+
+```js
+function _instanceof(o, constructor) {
+  let proto = o.__proto__;
+  while(proto) {
+    if(proto === constructor.prototype) return true;
+    proto = proto.__proto__;
+  }
+  return false;
+}
+```
 
 ## 23. 私有变量的实现
 
+```js
+// 模块化做法
+// 如果使用的是commonjs或者es module这样的模块化形式
+// 配合 ES6 的 Symbol 即可
+
+// student.js
+const __name__ = Symbol('name');
+const __privateFunc__ = Symbol('pf');
+
+class Student {
+  constructor(name) {
+    this[__name__] = name; // 私有属性
+  }
+  get name() {
+    return this[__name__];
+  }
+  setName(newName) {
+    this[__name__] = newName;
+  }
+  [__privateFunc__]() { // 私有方法
+    console.log('我是私有方法，外部无法访问');
+  }
+}
+
+// 非模块化
+// 可以通过 proxy 禁止方法下划线开头的变量和方法
+
+function getStudent(name) {
+
+  class Student {
+    constructor(name) {
+      this._name = name; // 私有属性
+    }
+  }
+
+  return new Proxy(new Student(name), {
+    get: function(target, key, receiver) {
+      if(key.startsWith('_')) throw new Error('private member is not allowed to get');
+      return Reflect.get(target, key, receiver);
+    },
+    set: function(target, key, value, receiver) {
+      if(key.startsWith('_')) throw new Error('private member is not allowed to set');
+      return Reflect.set(target, key, value, receiver);
+    }
+  });
+}
+```
+
 ## 24. 洗牌算法（数组乱序）
+
+```js
+function shuffle(arr) {
+  for(let i = 0;i < arr.length; ++i) {
+    let randomIndex = i + Math.floor(Math.random() * (arr.length - i));
+    [arr[i], arr[randomIndex]] = [arr[randomIndex], arr[i]];
+  }
+}
+```
 
 ## 25. 单例模式
 
+```js
+// 简单用法：
+let instance;
+function getInstance(func, ...args) {
+  if(!instance) {
+    instance = new func(...args);
+  }
+  return instance;
+}
+
+// ES6 proxy
+function singleton(func) {
+  let instance;
+  return new Proxy(func, {
+    construct(...args) {
+      if(!instance) {
+        instance = Reflect.construct(func, args);
+      }
+      return instance;
+    }
+  });
+}
+```
+
 ## 26. promisify
+
+```js
+function promisify(asyncFunction) {
+  return function(...args) {
+    return new Promise((resolve, reject) => {
+      args.push(function callback(err, ...values) {
+        if(err) {
+          reject(err);
+        }
+        resolve(...values);
+      });
+      asyncFunction.apply(this, args);
+    });
+  }
+}
+```
 
 ## 27. 优雅地处理 async/await
 
+```js
+// 其实就是加一层异常捕获
+async function errorCapturedAsync(func, ...args) {
+  try {
+    let res = await func(...args);
+    return [null, res];
+  } catch(e) {
+    return [e, null];
+  }
+}
+```
+
 ## 28. 发布订阅 EventEmitter
 
-## 29. 实现 JSON.stringify
+```js
+class EventEmitter {
+  constructor() {
+    this.callbacks = {};
+  }
+
+  on(event, callback) {
+    let cbs = this.callbacks[event] || (this.callbacks[event] = []);
+    cbs.push(callback);
+  }
+
+  once(event, callback) {
+    let cb = function(...args) {
+      let hasRun = false;
+      if(hasRun) return;
+      hasRun = true;
+      return callback(...args);
+    }
+    this.on(event, cb);
+  }
+
+  emit(event, ...args) {
+    let cbs = this.callbacks[event];
+    if(!cbs) return;
+    cbs.forEach(cb => cb(...args));
+  }
+
+  off(event, callback) {
+    if(!event) return;
+    let cbs = this.callbacks[event];
+    if(!cbs) return;
+    if(!callback) {
+      delete cbs;
+      return;
+    }
+    cbs = cbs.filter(cb => cb !== callback);
+  }
+}
+```

@@ -8,6 +8,7 @@
 4. [执行上下文和变量对象](https://github.com/logcas/Frontend_Articles/blob/master/javascript/3-执行上下文和变量对象.md)
 5. [闭包](https://github.com/logcas/Frontend_Articles/blob/master/javascript/4-闭包.md)
 6. [call、apply、bind和this](https://github.com/logcas/Frontend_Articles/blob/master/javascript/5-call、apply、bind和this.md)
+7. [JavaScript日常技巧](https://github.com/logcas/Frontend_Articles/blob/master/javascript/6-JavaScript技巧.md)
 
 ## Node
 1. [垃圾回收机制](https://github.com/logcas/Frontend_Articles/blob/master/node/0-垃圾清理.md)

@@ -1,0 +1,23 @@
+{
+  "name": "frontend_articles",
+  "version": "1.0.0",
+  "description": "日常写作",
+  "main": "index.js",
+  "scripts": {
+    "test": "promises-aplus-tests ./javascript/Promise.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logcas/Frontend_Articles.git"
+  },
+  "keywords": [],
+  "author": "Lucas <everlastlucas@outlook.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logcas/Frontend_Articles/issues"
+  },
+  "homepage": "https://github.com/logcas/Frontend_Articles#readme",
+  "devDependencies": {
+    "promises-aplus-tests": "^2.1.2"
+  }
+}

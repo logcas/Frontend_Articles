@@ -8,7 +8,7 @@ Function.prototype._bind = function(context) {
   const args = [].prototype.slice.call(arguments, 1);
   const binding = function() {
     args.push(...[].prototype.slice(arguments));
-    return fn.apply(this instanceof fn ? this : ctx, args);
+    return this instanceof binding ? new fn(this, ...args) : fn.apply(ctx, args); 
   };
   fn.prototype && (binding.prototype = Object.create(fn.prototype));
   return binding;

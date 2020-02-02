@@ -13,23 +13,28 @@ function MyPromise(executor) {
     if (value instanceof Promise) {
       return value.then(resolve, reject);
     }
-    if (this.status === PENDING) {
-      setTimeout(() => {
+    setTimeout(() => {
+      if (this.status === PENDING) {
+
         this.status = FULFILLED;
         this.value = value;
-        this.onFulfilledCallbacks.forEach(cb => cb(this.value));
-      }, 0);
-    }
+        this.onFulfilledCallbacks.map(cb => {
+          cb = cb(this.value);
+        });
+      }
+    });
   };
 
   const reject = reason => {
-    if (this.status === PENDING) {
-      setTimeout(() => {
+    setTimeout(() => {
+      if (this.status === PENDING) {
         this.status = REJECTED;
         this.reason = reason;
-        this.onRejectedCallbacks.forEach(cb => cb(this.reason));
-      }, 0);
-    }
+        this.onRejectedCallbacks.map(cb => {
+          cb = cb(this.reason);
+        });
+      }
+    });
   };
 
   try {
@@ -75,7 +80,7 @@ MyPromise.prototype.then = function (onFulFilled, onRejected) {
         } catch (error) {
           reject(error);
         }
-      }, 0);
+      });
     }));
   } else {
     return (promise = new MyPromise((resolve, reject) => {
@@ -86,7 +91,7 @@ MyPromise.prototype.then = function (onFulFilled, onRejected) {
         } catch (error) {
           reject(error);
         }
-      }, 0);
+      });
     }));
   }
 };
@@ -114,7 +119,7 @@ function resolvePromise(promise, x, resolve, reject) {
       x.then(resolve, reject);
     }
     // x 为对象或函数 (即 x 为 thenable)
-  } else if (x && typeof x === 'object' || typeof x === 'function') {
+  } else if (x && (typeof x === 'object' || typeof x === 'function')) {
     let called = false;
     try {
       // 把 x.then 赋值给 then。
@@ -171,7 +176,7 @@ MyPromise.all = function (promises) {
   return new MyPromise((resolve, reject) => {
     let len = promises.length;
     const values = [];
-    for(let i = 0;i < len; ++i) {
+    for (let i = 0; i < len; ++i) {
       promises.then(val => {
         values[i] = val;
         if (values.length === len) {
@@ -184,17 +189,17 @@ MyPromise.all = function (promises) {
 
 MyPromise.race = function (promises) {
   return new MyPromise((resolve, reject) => {
-    for(let i = 0;i < promises.length; ++i) {
+    for (let i = 0; i < promises.length; ++i) {
       promises[i].then(resolve, reject);
     }
   });
 }
 
-MyPromise.resolve = function(value) {
+MyPromise.resolve = function (value) {
   return new MyPromise(resolve => resolve(value));
 }
 
-MyPromise.reject = function(reason) {
+MyPromise.reject = function (reason) {
   return new MyPromise((resolve, reject) => reject(reason));
 }
 

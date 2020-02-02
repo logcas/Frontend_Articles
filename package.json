@@ -4,7 +4,8 @@
   "description": "日常写作",
   "main": "index.js",
   "scripts": {
-    "test": "promises-aplus-tests ./javascript/Promise.js"
+    "test": "promises-aplus-tests ./javascript/PromiseES6.js",
+    "post": "git add . && git commit -m\"add\" && git push origin master"
   },
   "repository": {
     "type": "git",
